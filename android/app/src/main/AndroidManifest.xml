@@ -10,7 +10,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="Order Ease Seller"
+        android:label="MT Seller"
         android:usesCleartextTraffic="true">
 
         <activity

@@ -20,6 +20,7 @@ import '../Helper/inputChipUxScreen.dart';
 import '../Model/Attribute Models/AttributeModel/AttributesModel.dart';
 import '../Model/Attribute Models/AttributeSetModel/AttributeSetModel.dart';
 import '../Model/Attribute Models/AttributeValueModel/AttributeValue.dart';
+import '../Model/CategoryModel/SubCategoryModel.dart';
 import '../Model/CategoryModel/categoryModel.dart';
 import '../Model/ProductModel/Variants.dart';
 import '../Model/TaxesModel/TaxesModel.dart';
@@ -51,6 +52,7 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
 // => Variable For UI ...
   // for UI
   String? selectedCatName; // for UI
+  dynamic selectedSubCatName; // for UI
   int? selectedTaxID; // for UI
   ProductModel? model;
 //on-off toggles
@@ -179,6 +181,7 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
   TextEditingController variountProductTotalStock = TextEditingController();
 
   getData(){
+    print("jjjjjjjjjjjjjjjjjjjjjj${model!.subcategoryName}");
     // var desc = Html(data: model!.shortDescription.toString());
     /* bool isreturnable = false;
     bool isCODallow = false;
@@ -193,6 +196,8 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
       isCancelable = model!.isCancelable.toString();
       selectedCatID = model!.categoryId.toString();
       selectedCatName = model!.categoryName.toString();
+      // selectedSubCatName = model!.subcategoryName.toString();
+      selectedSubCatName = subCategoryModel?.data?.firstWhere((item) => item.name.toString() == model!.subcategoryName.toString());
       sortDescription = model!.shortDescription.toString();
       description = model!.description.toString();
       taxincludedinPrice = model!.isPricesInclusiveTax.toString();
@@ -2183,9 +2188,7 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
                     itemCount: catagorylist.length,
                     itemBuilder: (context, index) {
                       CategoryModel? item;
-
                       item = catagorylist.isEmpty ? null : catagorylist[index];
-
                       return item == null ? Container() : getCategorys(index);
                     },
                   ),
@@ -2196,6 +2199,126 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
         ],
       ),
     );
+  }
+
+
+  selectSubCategory() {
+    return Padding(
+      padding:  EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding:  EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  getTranslated(context, "selected subCategory")! + " :",
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.grey[400],
+                      border: Border.all(color: black)),
+                  width: 170,
+                  height: 40,
+                  child: Center(
+                    child: subCategoryModel?.data?.isEmpty ?? true ? Text(
+                      getTranslated(context, "Not Selected Yet ...")!,
+                    ):
+                    DropdownButtonFormField<dynamic>(
+                      value: selectedSubCatName,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedSubCatName = newValue;
+                          // selectedSubCatiDD = newValue[0].id;
+                        });
+                      },
+                      items: subCategoryModel?.data?.map((items) {
+                        return DropdownMenuItem<dynamic>(
+                          value: items,
+                          child:Text(items.name.toString(), style: TextStyle(color: Colors.black)),
+                        );
+                      }).toList(),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(bottom: 5),
+                        // border: OutlineInputBorder(
+                        //     borderRadius: BorderRadius.circular(15)),
+                        hintText: "Data",
+                        hintStyle: TextStyle(fontSize: 18, color: Colors.black),
+                        // label: Text(
+                        //   getTranslated(context, "selected subCategory")! + " :",
+                        //   style: TextStyle(
+                        //     fontSize: 18, color: Colors.black
+                        //   ),
+                        // ),
+                      ),
+                    ),
+                    // selectedSubCatName == null
+                    //     ? Text(
+                    //   getTranslated(context, "Not Selected Yet ...")!,
+                    //   )
+                    //     : Text(selectedSubCatName!),
+                  ),
+                )
+              ],
+            ),
+          ),
+          // Container(
+          //   width: double.infinity,
+          //   decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(4),
+          //     color: lightWhite1,
+          //     border: Border.all(color: black),
+          //   ),
+          //   height: 200,
+          //   child: SingleChildScrollView(
+          //     child: Column(
+          //       children: [
+          //         ListView.builder(
+          //           shrinkWrap: true,
+          //           padding: EdgeInsetsDirectional.only(
+          //               bottom: 5, start: 10, end: 10),
+          //           physics: NeverScrollableScrollPhysics(),
+          //           itemCount: catagorylist.length,
+          //           itemBuilder: (context, index) {
+          //             CategoryModel? item;
+          //             item = catagorylist.isEmpty ? null : catagorylist[index];
+          //             return item == null ? Container() : getCategorys(index);
+          //           },
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  SubCategoryModel? subCategoryModel;
+  Future<SubCategoryModel?> getSubCat(id) async {
+    var header = headers;
+    var request = http.MultipartRequest('POST', getSubCategoriesApi);
+    request.fields.addAll({'parent_id': '$id'});
+    print("get sub category ${request.fields}");
+    request.headers.addAll(header);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      final str = await response.stream.bytesToString();
+      print("get sub category response ${json.decode(str)}");
+      final result = SubCategoryModel.fromJson(json.decode(str));
+      setState(() {
+        subCategoryModel = result;
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   getCategorys(int index) {
@@ -2209,9 +2332,9 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
             selectedCatName = model.name;
             selectedCatID = model.id;
             setState(() {});
+            getSubCat(selectedCatID);
           },
           child: Container(
-
             child: Row(
               children: [
                 Icon(
@@ -5201,10 +5324,10 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
               textInputAction: TextInputAction.next,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               onChanged: (String? value) {
-               setState(() {
-                 simpleproductTotalStock = value;
-               });
-               print("llllllllllllll ${simpleproductTotalStock}");
+                setState(() {
+                  simpleproductTotalStock = value;
+                });
+                print("llllllllllllll ${simpleproductTotalStock}");
               },
               decoration: InputDecoration(
                 filled: true,
@@ -5739,7 +5862,7 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
         // for product Image ADD
         if (selectedimage != null) {
           request.files.add(await http.MultipartFile.fromPath(ProInputImage,
-          selectedimage.path));
+              selectedimage.path));
         }
         if (selectedimage2 != null) {
           request.files.add(await http.MultipartFile.fromPath(OtherImages, selectedimage2.path));
@@ -5766,6 +5889,7 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
         // }
         request.fields[ProInputDescription] = description!;
         request.fields[CategoryId] = selectedCatID!;
+        request.fields['sub_category_name'] = selectedSubCatName.id!;
         //attribute_values
         // this is complecated
         request.fields[ProductType] = productType!;
@@ -5793,6 +5917,7 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
           // }
         }
         print('edit prod request${request.fields} ${request.files} $selectedimage $selectedimage2');
+
         // else if (productType == 'variable_product') {
         //   String val = '', price = '', sprice = '', images = '';
         //   for (int i = 0; i < variationList.length; i++) {
@@ -5844,7 +5969,8 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
         //     request.fields[VariantLevelStockStatus] = stkStatus;
         //   }
         // }
-        print("reuest fieldssssss edit parameeter : ${request.fields}");
+
+        print("reuest fieldssssss : ${request.fields}");
         var response = await request.send();
         var responseData = await response.stream.toBytes();
         var responseString = String.fromCharCodes(responseData);
@@ -5856,7 +5982,7 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
         if (!error) {
           await buttonController!.reverse();
           Navigator.pop(context);
-          // Navigator.pop(context);
+          Navigator.pop(context);
           // setSnackbar(msg);
         } else {
           await buttonController!.reverse();
@@ -5906,7 +6032,8 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
             // //1.       //this part painding
             // selectZipcode(),
             //..................
-            selectCategory(), //2. panding
+            selectCategory(), //2
+            selectSubCategory(),// . panding
             // _isReturnable(),
             // _isCODAllow(),
             // taxIncludedInPrice(),
@@ -5928,7 +6055,6 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
                 ),
               ),
             ): Container(),
-
             otherImages("other", 0), //only API panding
             uploadedOtherImageShow(),
             (selectedimage2 == null || selectedimage2 == "") && (widget.model.otherImages == null || widget.model.otherImages == '') ? Container() :
@@ -5993,11 +6119,11 @@ class _EditProductState extends State<EditProduct> with TickerProviderStateMixin
       });
     });
     print("validate hai ya ni ${validateAndSave()}");
-  //  if (validateAndSave()) {
-      print("yes here ");
-      _playAnimation();
-      editProductAPI(attributesValuesIds);
-  //  }
+    //  if (validateAndSave()) {
+    print("yes here ");
+    _playAnimation();
+    editProductAPI(attributesValuesIds);
+    //  }
   }
 
   bool validateAndSave() {

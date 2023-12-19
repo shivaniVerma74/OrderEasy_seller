@@ -8,10 +8,15 @@ import 'package:eshopmultivendor/Helper/String.dart';
 import 'package:eshopmultivendor/Model/Customer/CustomerModel.dart';
 import 'package:eshopmultivendor/Model/OrdersModel/OrderModel.dart';
 import 'package:eshopmultivendor/Screen/OrderDetail.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
+
+import 'ChatWithUser.dart';
 import 'Customers.dart';
 
 class OrderList extends StatefulWidget {
@@ -715,6 +720,66 @@ class _OrderListState extends State<OrderList> with TickerProviderStateMixin {
     );
   }
 
+  List<Customer> notiList = [];
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  bool chatLoading = false;
+  bool iconTapped = false;
+  callChat(index) async {
+    setState(() {
+      iconTapped = true;
+    });
+    Customer model = notiList[index];
+    var otherUser1 = types.User(
+      firstName: model.name!.toString(),
+      id: model.fuid.toString(),///fuid should be the other user with whome we chat
+      imageUrl: 'https://i.pravatar.cc/300?u=${model.email}',
+      lastName: "",
+    );
+
+    print("otherUser1 $otherUser1");
+
+    _handlePressed(otherUser1, context, model.fuid.toString(), model);
+  }
+
+  _handlePressed( types.User otherUser, BuildContext context, String fcmID, Customer model) async {
+    print("model.id! is ${model.id!}");
+
+    if(model.email == null || model.email == ""){
+      print("User_email is null");
+      setState(() {
+        chatLoading = false;
+        iconTapped = false;
+      });
+      setSnackbar('Please ask user to update email.');
+    }else if(fcmID == null || fcmID == ''){
+      print('fuid is null');
+      setState(() {
+        chatLoading = false;
+        iconTapped = false;
+      });
+      setSnackbar('Something went wrong, please ask user to relogin.');
+    }else{
+      final room = await FirebaseChatCore.instance.createRoom(otherUser);
+      setState(() {
+        chatLoading = false;
+        iconTapped = false;
+      });
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChatWithUser(
+              room: room,
+              fcm: fcmID,
+              fuid: fcmID,
+              id: model.id!,
+              name: model.name!, mobile: model.mobile!
+          ),
+        ),
+      );
+    }
+
+  }
+
+
   orderItem(int index) {
     Order_Model model = orderList[index];
     Color back;
@@ -954,8 +1019,15 @@ class _OrderListState extends State<OrderList> with TickerProviderStateMixin {
               ),
               model.itemList![0].activeStatus! == DELIVERD || model.itemList![0].activeStatus! == CANCLED || model.itemList![0].activeStatus! == SHIPED ? SizedBox.shrink():
               InkWell(
+                // onTap: iconTapped == true? null : () async{
+                //   await callChat(index);
+                //   if(iconTapped == true){
+                //     setSnackbar('Please wait, Chat screen getting opened');
+                //   }
+                //   print("going to chat screen");
+                // },
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Customers()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_controller) => Customers()));
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),

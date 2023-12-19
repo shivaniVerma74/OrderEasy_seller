@@ -2269,7 +2269,7 @@ class _AddProductState extends State<AddProduct> with TickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(
-            padding:  EdgeInsets.only(bottom: 8.0),
+            padding: EdgeInsets.only(bottom: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -5827,7 +5827,7 @@ class _AddProductState extends State<AddProduct> with TickerProviderStateMixin {
           await buttonController!.reverse();
           setSnackbar(msg);
           Navigator.pop(context);
-          Navigator.pop(context);
+          // Navigator.pop(context);
         } else {
           await buttonController!.reverse();
           setSnackbar(msg);
@@ -6063,7 +6063,6 @@ class _AddProductState extends State<AddProduct> with TickerProviderStateMixin {
   }
 
   SubCategoryModel? subCategoryModel;
-
   Future<SubCategoryModel?> getSubCat(id) async {
     var header = headers;
     var request = http.MultipartRequest('POST', getSubCategoriesApi);

@@ -14,6 +14,7 @@ class Product {
       noOfRating,
       attrIds,
       tax,
+       subcatName,
       categoryId,
       shortDescription,
       product_status,
@@ -58,6 +59,7 @@ class Product {
         this.image,
         this.product_status,
         this.catName,
+        this.subcatName,
         this.type,
         this.otherImage,
         this.prVarientList,
@@ -126,6 +128,7 @@ class Product {
       desc: json[Description],
       image: json[IMage],
       catName: json[CategoryName],
+      subcatName: json['sub_category_name'],
       rating: json[Rating],
       noOfRating: json[NoOfRatings],
       stock: json[Stock],
@@ -219,6 +222,7 @@ class ProductModel {
   String? madeIn;
   String? availability;
   String? categoryName;
+  String? subcategoryName;
   String? taxPercentage;
   List<String>? reviewImages;
   List<String>? attributes;
@@ -244,6 +248,7 @@ class ProductModel {
         this.attrValueIds,
         this.sellerRating,
         this.sellerSlug,
+        this.subcategoryName,
         this.sellerNoOfRatings,
         this.sellerProfile,
         this.storeName,
@@ -340,6 +345,7 @@ class ProductModel {
     madeIn = json['made_in'];
     availability = json['availability'].toString();
     categoryName = json['category_name'];
+    subcategoryName = json['sub_category_name'];
     taxPercentage = json['tax_percentage'];
     if (json['review_images'] != null) {
       reviewImages = [];

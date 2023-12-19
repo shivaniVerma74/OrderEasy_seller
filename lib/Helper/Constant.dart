@@ -1,4 +1,4 @@
-final String appName = 'Order Ease Seller';
+final String appName = 'MT Seller';
 
 final String packageName = 'com.order_easy.seller';
 

@@ -125,8 +125,6 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
   final FirebaseAuth auth = FirebaseAuth.instance;
   bool chatLoading = false;
   bool iconTapped = false;
-
-
   callChat(index) async {
     setState(() {
       iconTapped = true;
@@ -203,7 +201,6 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: getAppbar(),
@@ -227,7 +224,8 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
                             child: RefreshIndicator(
                               key: _refreshIndicatorKey,
                               onRefresh: _refresh,
-                              child: ListView.builder(
+                              child:
+                              ListView.builder(
                                 controller: notificationcontroller,
                                 // shrinkWrap: true,
                                 //  controller: controller,
@@ -237,7 +235,6 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
                                   // return (index == notiList.length && isLoadingmore)
                                   //     ? Center(child: CircularProgressIndicator())
                                   //     : listItem(index);
-
                                   Customer? item;
                                   try {
                                     item = notiList.isEmpty
@@ -419,7 +416,6 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
     String add = model.street! + " " + model.area! + " " + model.city!;
 
     return GestureDetector(
-
       child: Card(
         elevation: 0,
         color: white,
@@ -450,8 +446,6 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-
-
                     InkWell(
                       onTap: (){
                         // if(model.status == "1"){
@@ -716,9 +710,7 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
                                     text: TextSpan(
                                       children: <TextSpan>[
                                         TextSpan(
-                                          text: getTranslated(
-                                                  context, "Joining Date")! +
-                                              " : ",
+                                          text: getTranslated(context, "Joining Date")! + " : ",
                                           style: TextStyle(color: grey),
                                         ),
                                         TextSpan(
@@ -739,7 +731,7 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
                               print("going to chat screen");
                             },
                             child: Container(
-                                    child: Text("Chat with customer", style: TextStyle(color: fontColor, fontSize: 12, fontWeight: FontWeight.w600),)
+                                    child: Text("Chat With Customer", style: TextStyle(color: fontColor, fontSize: 14, fontWeight: FontWeight.w600),)
                                   ),
                           ),
                         ],
@@ -760,17 +752,15 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
                                   ),
                                 ),
                               )
-                            : Container(
-                                height: 0,
-                              ),
-                        Container(
+                            : Container(height: 0),
+                         Container(
                           width: 80,
                           child: Text(
                             model.name!,
                             textAlign: TextAlign.center,
                             style: TextStyle(color: fontColor),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -865,9 +855,7 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
             OFFSET: notificationoffset.toString(),
             SEARCH: _searchText.trim(),
           };
-
           print("getCustomersApi_is__ ${getCustomersApi} & params___ $parameter");
-
           // final response = await http.post(getCustomersApi, body: parameter);
           // log("body_is__________${response.body}");
           // var jsonResponse = convert.jsonDecode(response.body);
@@ -879,27 +867,19 @@ class _CustomersState extends State<Customers> with TickerProviderStateMixin {
           // }else{
           //   log("getCustomersApi_response______________ $jsonResponse");
           // }
-
-
           apiBaseHelper.postAPICall(getCustomersApi, parameter).then(
             (getdata) async {
               bool error = getdata["error"];
               String? msg = getdata["message"];
               notificationisgettingdata = false;
-
               if (notificationoffset == 0) notificationisnodata = error;
 
               if (!error) {
                 tempList.clear();
                 var mainList = getdata["data"];
                 log("getCustomersApi_response______________ $mainList");
-
-
                 if (mainList.length != 0) {
-                  tempList = (mainList as List)
-                      .map((data) => new Customer.fromJson(data))
-                      .toList();
-
+                  tempList = (mainList as List).map((data) => new Customer.fromJson(data)).toList();
                   notiList.addAll(tempList);
                   notificationisloadmore = true;
                   notificationoffset = notificationoffset + perPage;

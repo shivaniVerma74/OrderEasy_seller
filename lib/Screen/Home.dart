@@ -36,6 +36,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Helper/Indicator.dart';
 import '../main.dart';
 import 'Profile.dart';
+import 'SubscribeCustomer.dart';
 import 'TermFeed/Terms_Conditions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -987,7 +988,8 @@ bool isLoading= true;
               _getDrawerItem(1, getTranslated(context, "ORDERS")!,
                   Icons.shopping_basket_outlined),
               Divider(),
-              // _getDrawerItem(2, getTranslated(context, "CUSTOMERS")!, Icons.person),
+              _getDrawerItem(2, getTranslated(context, "CUSTOMERS")!, Icons.person),
+              _getDrawerItem(2, getTranslated(context, "SUBSCRIBE_CUSTOMER")!, Icons.person),
               _getDrawerItem(22, getTranslated(context, "Staff")!, Icons.person),
               _getDrawerItem(21, getTranslated(context, "Create_staff")!, Icons.person_2),
               // _getDrawerItem(23, getTranslated(context, "Manage_staff")!, Icons.person_2),
@@ -1282,6 +1284,20 @@ bool isLoading= true;
               context,
               MaterialPageRoute(
                 builder: (context) => Customers(),
+              ),
+            );
+          }
+          else if (title == getTranslated(context, "SUBSCRIBE_CUSTOMER")!) {
+            setState(
+                  () {
+                curDrwSel = index;
+              },
+            );
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SuscribeCustomer(),
               ),
             );
           }
