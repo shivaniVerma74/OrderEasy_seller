@@ -418,7 +418,7 @@ class _AddPostsState extends State<AddPosts> {
   //   }
   // }
 
-  addPosts() async{
+  addPosts() async {
     CUR_USERID = await getPrefrence(Id);
     var headers = {
       'Cookie': 'ci_session=aa83f4f9d3335df625437992bb79565d0973f564'
@@ -426,7 +426,7 @@ class _AddPostsState extends State<AddPosts> {
     var request = http.MultipartRequest('POST', Uri.parse(addPostsApi.toString()));
     request.fields.addAll({
       SellerId : CUR_USERID.toString(),
-      'product_id':categoryValue.toString(),
+      'product_id': categoryValue.toString(),
       'text':descriptionController.text.toString(),
       'old_price':oldPriceController.text.toString(),
       'new_price': newPriceController.text.toString(),
@@ -446,7 +446,6 @@ class _AddPostsState extends State<AddPosts> {
     print("this is refer request image ${request.files}");
     // print("this is refer request image ${imagePathList[0]}");
     request.headers.addAll(headers);
-
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       String str = await response.stream.bytesToString();
@@ -537,7 +536,6 @@ class _AddPostsState extends State<AddPosts> {
         const SizedBox(
           height: 50,
         ),
-
       ],
     );
   }

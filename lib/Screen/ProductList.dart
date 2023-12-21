@@ -419,7 +419,6 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             String? msg = getdata["message"];
             if (!error) {
               total = int.parse(getdata["total"]);
-
               if (_isFirstLoad) {
                 filterList = getdata["filters"];
                 _isFirstLoad = false;
@@ -834,8 +833,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     child: Text(getTranslated(context, "SelectVarient")!),
                   ),
                 ),
-              )
-                  : Container()
+              ) : Container()
             ],
           ),
         ),

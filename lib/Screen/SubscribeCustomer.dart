@@ -172,9 +172,14 @@ class _SuscribeCustomerState extends State<SuscribeCustomer> {
       // ):
       Column(
         children: [
-          Container(
-            height: 500,
-            decoration: BoxDecoration(color: Colors.red),
+          customerData?.date?.length == null || customerData?.date?.length == "" ? Padding(
+            padding:
+            const EdgeInsetsDirectional.only(top: kToolbarHeight),
+            child: Center(
+              child: Text(getTranslated(context, "NOCUSTOMERFOUND")!),
+            ),
+          ):
+          Expanded(
             child: ListView.builder(
               shrinkWrap: true,
               //  controller: controller,
@@ -184,7 +189,7 @@ class _SuscribeCustomerState extends State<SuscribeCustomer> {
                 // return (index == notiList.length && isLoadingmore)
                 //     ? Center(child: CircularProgressIndicator())
                 //     : listItem(index);
-               listItem(index);
+               return listItem(index);
               },
             ),
           ),
@@ -538,14 +543,25 @@ class _SuscribeCustomerState extends State<SuscribeCustomer> {
                     //row
                     Column(
                       children: [
-                        customerData?.date?[index].image != null &&  customerData?.date?[index].image != ''
+                        customerData?.date?[index].image == null || customerData?.date?[index].image == "" ? Container(
+                          width: 70,
+                          height: 70,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(3.0),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage("assets/images/placeholder.png"),
+                              radius: 25,
+                            ),
+                          ),
+                        ):
+                        customerData?.date?[index].image != null &&  customerData?.date?[index].image!= ''
                             ? Container(
                           width: 70,
                           height: 70,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(3.0),
                             child: CircleAvatar(
-                              backgroundImage: NetworkImage( customerData?.date?[index].image !),
+                              backgroundImage: NetworkImage( customerData?.date?[index].image!),
                               radius: 25,
                             ),
                           ),

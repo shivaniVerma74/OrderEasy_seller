@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Order Ease - Bakery',
+      title: 'MT Seller',
       theme: ThemeData(
         primarySwatch: primary_app,
         fontFamily: 'opensans',

@@ -49,7 +49,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> with TickerProviderStateM
       SellerId : CUR_USERID.toString(),
       'type': selectedTab.toString()
     });
-    print("------SSSSSS-------${getMyPostsApi}----------${request.fields}");
+    print("------SSSSSS-------$getMyPostsApi----------${request.fields}");
 
     print("this is refer request ${request.fields.toString()}");
     request.headers.addAll(headers);
